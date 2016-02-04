@@ -5,11 +5,10 @@
  */
 
 var app = require('../app');
+var socketSet = require('../socketSet');
 var debug = require('debug')('myappWithEjs:server');
 var http = require('http');
-var socketio = require('socket.io');
-var moment = require('moment');
-moment.locale('ko');
+
 /**
  * Get port from environment and store in Express.
  */
@@ -30,8 +29,6 @@ var server = http.createServer(app);
 server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
-
-var io = socketio.listen(server);
 
 /**
  * Normalize a port into a number, string, or false.
@@ -93,24 +90,5 @@ function onListening() {
   debug('Listening on ' + bind);
 }
 
+socketSet(server);
 
-
-io.on('connection', function (socket) {
-    console.log('a user connected');
-    
-    socket.broadcast.emit('connect', function() {
-        io.emit('connect', { for: 'everyone' });
-    });
-    
-    socket.on('chat message', function (data) {
-        console.log('data : ' + data);
-        console.log('user: ' + data.user);
-        console.log('message: ' + data.msg);
-        data.time = moment().format('LLLL');
-        io.emit('chat message', data);
-    });
-    
-    socket.on('disconnect', function () {
-        console.log('user disconnected');
-    });
-});

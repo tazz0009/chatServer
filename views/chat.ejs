@@ -79,8 +79,8 @@
     <script src="/javascripts/bootstrap.min.js"></script>
     <script src="/javascripts/common.js"></script>
     <script>
-        var socket = io();
         var user = '<%= user %>';
+        var socket = io('/');
         
         var addMsg1_l = '<li class="left clearfix"><span class="chat-img pull-left">'
         var addMsg1_r = '<li class="right clearfix"><span class="chat-img pull-right">'
@@ -110,6 +110,19 @@
             }
             
             $('#chat').append(newMsg);
+        });
+        socket.on('welcome', function (data) {
+            console.log(data);
+            var newMsg='';
+                newMsg = addMsg1_l;
+                newMsg += addMsg2_l;
+                newMsg += addMsg3;
+                newMsg += addMsg4_l.replace('${user}', data.user);
+                newMsg = newMsg.replace('${time}', data.time);
+                newMsg += addMsg5.replace('${msg}', data.msg + ' ' + user);
+            
+            $('#chat').append(newMsg);
+            socket.emit('join', user);
         });
 
         $(document).ready(function () {
