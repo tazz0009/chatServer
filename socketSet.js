@@ -16,6 +16,11 @@ var socketSet = function (server) {
 
         socket.on('join', function (data) {
             users[socket.id] = data;
+            socket.broadcast.emit('goOut', {
+                user: 'System',
+                msg: data + ' 입장하셨습니다.',
+                time: moment().format('LLLL')
+            });
         });
 
         socket.on('chat message', function (data) {
@@ -27,7 +32,13 @@ var socketSet = function (server) {
         });
 
         socket.on('disconnect', function () {
-            console.log('user disconnected');
+            var userEmail = users[socket.id];
+            console.log(userEmail + ' user disconnected');
+            socket.broadcast.emit('goOut', {
+                user: 'System',
+                msg: userEmail + ' 퇴장하셨습니다.',
+                time: moment().format('LLLL')
+            });
         });
     });
 }

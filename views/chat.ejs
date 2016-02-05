@@ -124,6 +124,19 @@
             $('#chat').append(newMsg);
             socket.emit('join', user);
         });
+        
+        socket.on('goOut', function (data) {
+            console.log(data);
+            var newMsg='';
+                newMsg = addMsg1_l;
+                newMsg += addMsg2_l;
+                newMsg += addMsg3;
+                newMsg += addMsg4_l.replace('${user}', 'System');
+                newMsg = newMsg.replace('${time}', data.time);
+                newMsg += addMsg5.replace('${msg}', data.msg);
+            
+            $('#chat').append(newMsg);
+        });
 
         $(document).ready(function () {
             $('#m').keypress(function (e) {
